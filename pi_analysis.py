@@ -6,7 +6,7 @@ class Consecutive:
     num = '0'
 
 pi_str = ""
-with open("pi_million.txt") as f:
+with open("pi_100_million.txt") as f:
     pi_str = f.read()
 
 def longest_repetition(pi:string) -> Consecutive:
