@@ -1,4 +1,4 @@
-from config import *
+import config
 
 class Consecutive:
     """
@@ -16,26 +16,28 @@ class Consecutive:
 
 def main():
     digits = ""
-    with open(DIGIT_FILE) as f:
-        digits = f.read(NUM_DIGITS)
+    with open(config.DIGIT_FILE) as f:
+        digits = f.read(config.NUM_DIGITS)
     counts = count_each_digits_occurrences(digits)
-    results = get_repeated_decimals_list(digits, REPEATED)
+    results = get_repeated_decimals_list(digits, config.REPEATED)
     display_results(counts, results)
 
 
 def count_each_digits_occurrences(digits: str) -> list[int]:
     counts = [0] * 10
-    for i in range(NUM_DIGITS):
+    for i in range(config.NUM_DIGITS):
         counts[int(digits[i])] += 1
     return counts
 
 def get_repeated_decimals_list(digits:str, min:int) -> list['Consecutive']:
     """
-
+    Return a list of info of all strings of repeated decimals in the string `digits`.
+    Only return info on the repetition if is at least 'min' decimals are repeated.
     """
+    
     results = []
     i = 0
-    while i < NUM_DIGITS - 1:
+    while i < config.NUM_DIGITS - 1:
         if digits[i] == digits[i + 1]:
             result = count_repeated(digits, i, min)
             if result != None:
@@ -48,7 +50,8 @@ def get_repeated_decimals_list(digits:str, min:int) -> list['Consecutive']:
 def count_repeated(digits:str, loc:int, min:int) -> list[Consecutive] | None:
     """
     Starting at `loc` index of `digits`, if the first `min` or more digits are repeated
-    return the location, number, and digit that was repeated, otherwise return None.
+    return the starting location, number of digits repeated, and digit that was repeated, 
+    otherwise return None.
     """
 
     count = 1
@@ -61,14 +64,14 @@ def count_repeated(digits:str, loc:int, min:int) -> list[Consecutive] | None:
     return None
 
 def display_results(counts:list[int], results: list['Consecutive'] ) -> None:
-    print(f"\nDigits of pi calculated: {NUM_DIGITS}")
+    print(f"\nDigits of pi calculated: {config.NUM_DIGITS}")
     print("---------------------------------------")
-    if VERBOSE:
+    if config.VERBOSE:
         print("\nNumber of times each digit appears: ")
         print("---------------------------------------")
         for i in range(10):
             print(f"{i}:        {counts[i]}")
-        print (f"\nInstances of {REPEATED} or more repeated digits: {len(results)}")
+        print (f"\nInstances of {config.REPEATED} or more repeated digits: {len(results)}")
         print("---------------------------------------")
         for result in results:
             print(f"Digit: '{result.num}',  Length: {result.length},  Location: {result.location}")
