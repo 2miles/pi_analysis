@@ -1,0 +1,4 @@
+REPEATED = 6
+NUM_DIGITS = 10000000
+VERBOSE = True
+DIGIT_FILE = "pi_10_million.txt"
