@@ -1,68 +1,78 @@
-import string
+from config import *
 
 class Consecutive:
-    length = 0
-    location = 0
-    num = '0'
+    """
+    Used to package up related data pertaining to a string of repeating decimals within a string of decimals
+    """
 
-pi_str = ""
-with open("pi_10_million.txt") as f:
-    pi_str = f.read()
+    length: int = 0
+    location: int = 0
+    num : str = '0'
+
+    def __init__(self, length, location, num):
+        self.length = length
+        self.location = location
+        self.num = num
+
+def main():
+    digits = ""
+    with open(DIGIT_FILE) as f:
+        digits = f.read(NUM_DIGITS)
+    counts = count_each_digits_occurrences(digits)
+    results = get_repeated_decimals_list(digits, REPEATED)
+    display_results(counts, results)
 
 
-def count_each_digit(pi: string) -> list['int']:
+def count_each_digits_occurrences(digits: str) -> list[int]:
     counts = [0] * 10
-    for i in range(len(pi) - 1):
-        count_digit(int(pi[i]), counts)
+    for i in range(NUM_DIGITS):
+        counts[int(digits[i])] += 1
     return counts
-    
 
-def count_digit(digit: int, counts: list['int']): 
-    counts[digit] += 1
+def get_repeated_decimals_list(digits:str, min:int) -> list['Consecutive']:
+    """
 
+    """
+    results = []
+    i = 0
+    while i < NUM_DIGITS - 1:
+        if digits[i] == digits[i + 1]:
+            result = count_repeated(digits, i, min)
+            if result != None:
+                results.append(result)
+                i += min
+                continue    
+        i += 1
+    return results
 
-def longest_repetition(pi:string) -> Consecutive:
-    result = Consecutive()
-    max = 0
-    ## iterate through each digit
-    for i in range(len(pi) - 1):
-        start = i
-        end = i + 1
-        # compare the digit with the next and see if they're the same
-        if pi[start] == pi[end]:
-            count = 1
-            # as long as they're the same, compare the digit after that against the original digit
-            # keeping a count as you go 
-            while pi[start] == pi[end]:
-                count += 1
-                end += 1
-            if count > max:
-                result.num = pi[start]
-                result.location = start
-                max = count
-        # skip the string we just counted
-        i += max
-    result.length = max
-    return result
+def count_repeated(digits:str, loc:int, min:int) -> list[Consecutive] | None:
+    """
+    Starting at `loc` index of `digits`, if the first `min` or more digits are repeated
+    return the location, number, and digit that was repeated, otherwise return None.
+    """
 
+    count = 1
+    end = loc + 1
+    while digits[loc] == digits[end]:
+        count += 1
+        end += 1
+    if count >= min:
+        return Consecutive(length=count, location=loc, num=digits[loc])
+    return None
 
-counts = count_each_digit(pi_str)
-results = longest_repetition(pi_str)
+def display_results(counts:list[int], results: list['Consecutive'] ) -> None:
+    print(f"\nDigits of pi calculated: {NUM_DIGITS}")
+    print("---------------------------------------")
+    if VERBOSE:
+        print("\nNumber of times each digit appears: ")
+        print("---------------------------------------")
+        for i in range(10):
+            print(f"{i}:        {counts[i]}")
+        print (f"\nInstances of {REPEATED} or more repeated digits: {len(results)}")
+        print("---------------------------------------")
+        for result in results:
+            print(f"Digit: '{result.num}',  Length: {result.length},  Location: {result.location}")
+        print()
 
-
-
-print("\nDigits of pi calculated: ")
-print("---------------------------------------")
-print(f"{len(pi_str) - 2}")
-
-print("\nCount of each digit: ")
-print("---------------------------------------")
-for i in range(10):
-    print(f"{i}:        {counts[i]}")
-print("\nLongest consecutive repeated digit: ")
-print("---------------------------------------")
-print(f"Length:   {results.length}")
-print(f"Number:   {results.num}")
-print(f"Location: {results.location}")
-print()
-
+if __name__ == "__main__":
+    main()
